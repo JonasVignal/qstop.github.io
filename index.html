@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qstop</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, white, lightgrey);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px;
+        }
+        h1 {
+            text-align: center;
+            width: 100%;
+            font-size: 42px; /* Større skriftstørrelse */
+
+        }
+        .content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        #icons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            flex: 1;
+        }
+        .icon-container {
+            text-align: center;
+            margin: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 15px; /* Rundede hjørner */
+        }
+        .icon {
+            width: 150px; /*størrelse på iconerne */
+            height: 150px;
+            cursor: pointer;
+        }
+        .cart {
+            background-color: rgba(255, 255, 215, 0.8);
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 270px;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center; /*center tekst i overskrift */
+            border-radius: 15px; /* Rundede hjørner */
+        }
+        .order-button {
+            background-color: green;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .remove-button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Velkommen til Parken</h1>
+    <div class="content">
+        <div id="icons">
+            <div class="icon-container">
+                <img src="icon1.png" class="icon" alt="Icon 1" onclick="addToCart('Coca Cola', 35)">
+                <p>Coca Cola 35,-</p>
+            </div>
+            <div class="icon-container">
+                <img src="icon2.png" class="icon" alt="Icon 2" onclick="addToCart('Carlsberg Fadøl', 55)">
+                <p>Carlsberg Fadøl 55,-</p>
+            </div>
+            <div class="icon-container">
+                <img src="icon3.png" class="icon" alt="Icon 3" onclick="addToCart('Monster Energy', 40)">
+                <p>Monster Energy 40,-</p>
+            </div>
+            <div class="icon-container">
+                <img src="icon4.png" class="icon" alt="Icon 4" onclick="addToCart('Kildevæld', 25)">
+                <p>Kildevæld 25,-</p>
+            </div>
+            <div class="icon-container">
+                <img src="icon5.png" class="icon" alt="Icon 5" onclick="addToCart('Ice Tea Peach', 35)">
+                <p>Ice Tea Peach 35,-</p>
+            </div>
+            <div class="icon-container">
+                <img src="icon6.png" class="icon" alt="Icon 6" onclick="addToCart('Popcorn', 35)">
+                <p>Popcorn 35,-</p>
+            </div>
+        </div>
+        <div class="cart">
+            <div>
+                <h2>Kurv</h2>
+                <ul id="cartItems"></ul>
+            </div>
+            <div>
+                <p id="totalPrice">Total: 0,-</p>
+                <button class="order-button" onclick="placeOrder()">Bestil nu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cart = {};
+        let totalPrice = 0;
+
+        function addToCart(item, price) {
+            if (cart[item]) {
+                cart[item].quantity++;
+            } else {
+                cart[item] = { price: price, quantity: 1 };
+            }
+            totalPrice += price;
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            for (const item in cart) {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${item} x ${cart[item].quantity} - ${cart[item].price * cart[item].quantity},-`;
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Fjern';
+                removeButton.className = 'remove-button';
+                removeButton.onclick = function() {
+                    removeFromCart(item);
+                };
+
+                listItem.appendChild(removeButton);
+                cartItems.appendChild(listItem);
+            }
+            document.getElementById('totalPrice').textContent = `Total: ${totalPrice},-`;
+        }
+
+        function removeFromCart(item) {
+            if (cart[item].quantity > 1) {
+                cart[item].quantity--;
+                totalPrice -= cart[item].price;
+            } else {
+                totalPrice -= cart[item].price;
+                delete cart[item];
+            }
+            updateCart();
+        }
+
+        function placeOrder() {
+            alert(`Tak for din bestilling. 
+
+                Total: ${totalPrice},-`);
+        }
+    </script>
+</body>
+</html>
